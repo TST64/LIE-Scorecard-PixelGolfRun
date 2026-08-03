@@ -1,5 +1,7 @@
-class AnimatedSprite {
-    constructor(frames, pixelSize) {
+class AnimatedSprite
+{
+    constructor(frames, pixelSize)
+    {
         this.frames = frames;
         this.pixelSize = pixelSize;
         this.currentFrame = 0;
@@ -7,20 +9,26 @@ class AnimatedSprite {
         this.ticksPerFrame = 6;
     }
 
-    update() {
+    update()
+    {
         this.tickCount++;
-        if (this.tickCount > this.ticksPerFrame) {
+        if (this.tickCount > this.ticksPerFrame)
+        {
             this.tickCount = 0;
             this.currentFrame = (this.currentFrame + 1) % this.frames.length;
         }
     }
 
-    draw(ctx, x, y) {
+    draw(ctx, x, y)
+    {
         const frame = this.frames[this.currentFrame];
-        for (let row = 0; row < frame.length; row++) {
-            for (let col = 0; col < frame[row].length; col++) {
+        for (let row = 0; row < frame.length; row++)
+        {
+            for (let col = 0; col < frame[row].length; col++)
+            {
                 let colorIndex = frame[row][col];
-                if (colorIndex !== 0) {
+                if (colorIndex !== 0)
+                {
                     ctx.fillStyle = colorPalette[colorIndex];
                     let drawX = x + (col * this.pixelSize);
                     let drawY = y + (row * this.pixelSize);
@@ -31,7 +39,7 @@ class AnimatedSprite {
     }
 }
 
-// 1. ZUERST obstacleTypes definieren (Greift auf Sprites aus sprites.js und pixelScale aus config.js zu)
+// ObstacleTypes definieren (Nutzt Daten aus sprites.js und config.js)
 const obstacleTypes = [
     { type: "single", sprite: new AnimatedSprite([flagFrame1, flagFrame2], pixelScale), flying: false, damage: 25 },
     { type: "single", sprite: new AnimatedSprite([cartFrame1, cartFrame2], pixelScale), flying: false, damage: 50 },
@@ -42,8 +50,8 @@ const obstacleTypes = [
     { type: "water", flying: false, damage: 35 }
 ];
 
-// 2. DANACH erst createObstacle definieren
-function createObstacle(startX) {
+function createObstacle(startX)
+{
     let randomIndex = Math.floor(Math.random() * obstacleTypes.length);
     let selectedType = obstacleTypes[randomIndex];
 
@@ -57,27 +65,34 @@ function createObstacle(startX) {
         damage: selectedType.damage
     };
 
-    if (selectedType.type === "bunker") {
+    if (selectedType.type === "bunker")
+    {
         let middleCount = Math.floor(Math.random() * 3);
         newObstacle.sprites.push(new AnimatedSprite([bunkerLeft], pixelScale));
-        for (let i = 0; i < middleCount; i++) {
+        for (let i = 0; i < middleCount; i++)
+        {
             newObstacle.sprites.push(new AnimatedSprite([bunkerMiddle], pixelScale));
         }
         newObstacle.sprites.push(new AnimatedSprite([bunkerRight], pixelScale));
 
         newObstacle.width = newObstacle.sprites.length * objSize;
         newObstacle.y = 130;
-    } else if (selectedType.type === "water") {
+    }
+    else if (selectedType.type === "water")
+    {
         let middleCount = Math.floor(Math.random() * 3);
         newObstacle.sprites.push(new AnimatedSprite([waterLeft], pixelScale));
-        for (let i = 0; i < middleCount; i++) {
+        for (let i = 0; i < middleCount; i++)
+        {
             newObstacle.sprites.push(new AnimatedSprite([waterMiddle], pixelScale));
         }
         newObstacle.sprites.push(new AnimatedSprite([waterRight], pixelScale));
 
         newObstacle.width = newObstacle.sprites.length * objSize;
         newObstacle.y = 130;
-    } else {
+    }
+    else
+    {
         newObstacle.sprites.push(selectedType.sprite);
 
         let frame = selectedType.sprite.frames[0];
@@ -87,9 +102,12 @@ function createObstacle(startX) {
         newObstacle.width = cols * pixelScale;
         newObstacle.height = rows * pixelScale;
 
-        if (selectedType.flying) {
+        if (selectedType.flying)
+        {
             newObstacle.y = 85;
-        } else {
+        }
+        else
+        {
             newObstacle.y = 170 - newObstacle.height;
         }
     }

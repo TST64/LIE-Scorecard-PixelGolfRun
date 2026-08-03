@@ -1,9 +1,12 @@
 // Retro Web Audio Synthesizer
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-function playJumpSound() 
+function playJumpSound()
 {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
+    if (audioCtx.state === 'suspended')
+    {
+        audioCtx.resume();
+    }
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.type = 'square';
@@ -17,9 +20,12 @@ function playJumpSound()
     osc.stop(audioCtx.currentTime + 0.15);
 }
 
-function playHitSound() 
+function playHitSound()
 {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
+    if (audioCtx.state === 'suspended')
+    {
+        audioCtx.resume();
+    }
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.type = 'square';
@@ -33,9 +39,12 @@ function playHitSound()
     osc.stop(audioCtx.currentTime + 0.2);
 }
 
-function playGameOverSound() 
+function playGameOverSound()
 {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
+    if (audioCtx.state === 'suspended')
+    {
+        audioCtx.resume();
+    }
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.type = 'sawtooth';

@@ -1,4 +1,4 @@
-if (!DEBUG_MODE) 
+if (!DEBUG_MODE)
 {
     document.getElementById("controlsPanel").style.display = "none";
 }
@@ -27,12 +27,12 @@ let grassTufts = [
     { x: 740, y: 185, w: 5 }
 ];
 
-function resetGame() 
+function resetGame()
 {
     currentState = GAME_STATE.PLAYING;
     baseSpeed = initialBaseSpeed;
 
-    if (DEBUG_MODE) 
+    if (DEBUG_MODE)
     {
         document.getElementById("sliderBaseSpeed").value = initialBaseSpeed.toFixed(1);
         document.getElementById("valBaseSpeed").textContent = initialBaseSpeed.toFixed(1);
@@ -48,7 +48,7 @@ function resetGame()
     activeObstacles.push(createObstacle(800));
 }
 
-// Slider Event Listener (Labor)
+// Live-Labor Event Listener
 document.getElementById("sliderInitialJump").addEventListener("input", (e) => {
     initialJumpPower = parseFloat(e.target.value);
     document.getElementById("valInitialJump").textContent = initialJumpPower.toFixed(1);
@@ -79,34 +79,42 @@ document.getElementById("sliderBaseGap").addEventListener("input", (e) => {
     document.getElementById("valBaseGap").textContent = baseMinGap;
 });
 
-// Steuerung
+// --- STEUERUNG: TASTATUR ---
 document.addEventListener("keydown", (e) => {
-    if (e.code === "Space") {
+    if (e.code === "Space")
+    {
         isSpacePressed = true;
 
-        if (currentState === GAME_STATE.START) {
+        if (currentState === GAME_STATE.START)
+        {
             resetGame();
             return;
         }
 
-        if (isGrounded && currentState === GAME_STATE.PLAYING && stamina > 10) {
+        if (isGrounded && currentState === GAME_STATE.PLAYING && stamina > 10)
+        {
             playJumpSound();
             player.velocityY = initialJumpPower;
             isGrounded = false;
         }
     }
 
-    if (e.code === "KeyP" && currentState !== GAME_STATE.GAMEOVER && currentState !== GAME_STATE.START) {
-        if (currentState === GAME_STATE.PLAYING) {
+    if (e.code === "KeyP" && currentState !== GAME_STATE.GAMEOVER && currentState !== GAME_STATE.START)
+    {
+        if (currentState === GAME_STATE.PLAYING)
+        {
             currentState = GAME_STATE.PAUSED;
-        } else {
+        }
+        else
+        {
             currentState = GAME_STATE.PLAYING;
             requestAnimationFrame(gameLoop);
         }
         return;
     }
 
-    if (currentState === GAME_STATE.GAMEOVER && (e.code === "KeyR" || e.code === "Enter")) {
+    if (currentState === GAME_STATE.GAMEOVER && (e.code === "KeyR" || e.code === "Enter"))
+    {
         resetGame();
         requestAnimationFrame(gameLoop);
         return;
@@ -114,23 +122,64 @@ document.addEventListener("keydown", (e) => {
 });
 
 document.addEventListener("keyup", (e) => {
-    if (e.code === "Space") {
+    if (e.code === "Space")
+    {
         isSpacePressed = false;
     }
 });
 
+// --- STEUERUNG: TOUCH (SMARTPHONE) ---
+canvas.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+
+    if (audioCtx.state === 'suspended')
+    {
+        audioCtx.resume();
+    }
+
+    isSpacePressed = true;
+
+    if (currentState === GAME_STATE.START)
+    {
+        resetGame();
+        return;
+    }
+
+    if (currentState === GAME_STATE.GAMEOVER)
+    {
+        resetGame();
+        requestAnimationFrame(gameLoop);
+        return;
+    }
+
+    if (isGrounded && currentState === GAME_STATE.PLAYING && stamina > 10)
+    {
+        playJumpSound();
+        player.velocityY = initialJumpPower;
+        isGrounded = false;
+    }
+}, { passive: false });
+
+canvas.addEventListener("touchend", (e) => {
+    e.preventDefault();
+    isSpacePressed = false;
+}, { passive: false });
+
 // Game Loop
-function gameLoop() {
-    // --- 1. SPLASHSCREEN (START) ---
-    if (currentState === GAME_STATE.START) {
+function gameLoop()
+{
+    // 1. SPLASHSCREEN
+    if (currentState === GAME_STATE.START)
+    {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Hintergrund & Wolken
-        for (let i = 0; i < clouds.length; i++) cloudSprite.draw(ctx, clouds[i].x, clouds[i].y);
+        for (let i = 0; i < clouds.length; i++)
+        {
+            cloudSprite.draw(ctx, clouds[i].x, clouds[i].y);
+        }
         ctx.fillStyle = "#2E8B57";
         ctx.fillRect(0, 170, canvas.width, 30);
 
-        // Overlay
         ctx.fillStyle = "rgba(0, 0, 0, 0.65)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -140,19 +189,19 @@ function gameLoop() {
 
         ctx.fillStyle = "white";
         ctx.font = "16px Arial";
-        ctx.fillText(`Hallo ${currentPlayerName}! Drücke 'LEERTASTE' zum Starten`, 230, 105);
+        ctx.fillText(`Hallo ${currentPlayerName}! Tippe oder drücke LEERTASTE`, 205, 105);
 
         ctx.font = "12px Arial";
         ctx.fillStyle = "#ddd";
-        ctx.fillText("Steuerung: LEERTASTE kurz = Hüpfen | LEERTASTE halten = Segeln (Stamina)", 195, 140);
-        ctx.fillText("'P' = Pause", 380, 160);
+        ctx.fillText("Steuerung: Tippen = Hüpfen | Gedrückt halten = Segeln (Stamina)", 210, 140);
 
         requestAnimationFrame(gameLoop);
         return;
     }
 
-    // --- 2. GAME OVER SCREEN ---
-    if (currentState === GAME_STATE.GAMEOVER) {
+    // 2. GAME OVER
+    if (currentState === GAME_STATE.GAMEOVER)
+    {
         checkAndSendHighScore(score);
 
         ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
@@ -163,12 +212,13 @@ function gameLoop() {
 
         ctx.font = "20px Arial";
         ctx.fillText("Dein Score: " + score + "   |   Highscore: " + highScore, 240, 110);
-        ctx.fillText("Drücke 'R' oder 'Enter' für Neustart", 240, 150);
+        ctx.fillText("Tippe oder drücke 'R' / 'Enter' für Neustart", 215, 150);
         return;
     }
 
-    // --- 3. PAUSE SCREEN ---
-    if (currentState === GAME_STATE.PAUSED) {
+    // 3. PAUSE
+    if (currentState === GAME_STATE.PAUSED)
+    {
         ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "white";
@@ -179,8 +229,9 @@ function gameLoop() {
         return;
     }
 
-    // --- 4. UPDATE (Spiellogik) ---
-    if (!isGrounded && isSpacePressed && stamina > 0) {
+    // 4. UPDATE (Logik)
+    if (!isGrounded && isSpacePressed && stamina > 0)
+    {
         player.velocityY += holdBoostPower;
         stamina -= staminaDrain;
         if (stamina < 0) stamina = 0;
@@ -189,12 +240,14 @@ function gameLoop() {
     player.velocityY += gravity;
     player.y += player.velocityY;
 
-    if (player.y >= 130) {
+    if (player.y >= 130)
+    {
         player.y = 130;
         player.velocityY = 0;
         isGrounded = true;
 
-        if (stamina < maxStamina) {
+        if (stamina < maxStamina)
+        {
             stamina += staminaRegen;
             if (stamina > maxStamina) stamina = maxStamina;
         }
@@ -206,22 +259,29 @@ function gameLoop() {
     let currentMinGap = Math.max(240, baseMinGap - (score * 8));
     let minGap = currentMinGap + Math.random() * 150;
 
-    if (lastObstacle && (canvas.width - lastObstacle.x) >= minGap) {
+    if (lastObstacle && (canvas.width - lastObstacle.x) >= minGap)
+    {
         activeObstacles.push(createObstacle(canvas.width + 50));
     }
 
-    for (let i = activeObstacles.length - 1; i >= 0; i--) {
+    for (let i = activeObstacles.length - 1; i >= 0; i--)
+    {
         let obs = activeObstacles[i];
         obs.x -= baseSpeed;
 
-        if (obs.flying) obs.y = 85 + Math.sin(obs.x * 0.015) * 35;
+        if (obs.flying)
+        {
+            obs.y = 85 + Math.sin(obs.x * 0.015) * 35;
+        }
 
-        if (obs.x + obs.width < 0) {
+        if (obs.x + obs.width < 0)
+        {
             activeObstacles.splice(i, 1);
             score++;
             baseSpeed += speedIncrement;
 
-            if (DEBUG_MODE) {
+            if (DEBUG_MODE)
+            {
                 document.getElementById("sliderBaseSpeed").value = baseSpeed.toFixed(1);
                 document.getElementById("valBaseSpeed").textContent = baseSpeed.toFixed(1);
             }
@@ -235,31 +295,40 @@ function gameLoop() {
             player.x + player.width - hitMargin > obs.x &&
             player.y < obs.y + obs.height - hitMargin &&
             player.y + player.height - hitMargin > obs.y
-        ) {
+        )
+        {
             health -= obs.damage;
-            if (health <= 0) {
+            if (health <= 0)
+            {
                 health = 0;
                 playGameOverSound();
                 currentState = GAME_STATE.GAMEOVER;
-            } else {
+            }
+            else
+            {
                 playHitSound();
                 invulnerabilityTimer = invulnerabilityDuration;
             }
         }
 
-        for (let sprite of obs.sprites) sprite.update();
+        for (let sprite of obs.sprites)
+        {
+            sprite.update();
+        }
     }
 
-    // Hintergründe bewegen
-    for (let i = 0; i < clouds.length; i++) {
+    for (let i = 0; i < clouds.length; i++)
+    {
         clouds[i].x -= clouds[i].speed * (baseSpeed / 6);
-        if (clouds[i].x + objSize < 0) {
+        if (clouds[i].x + objSize < 0)
+        {
             clouds[i].x = canvas.width + Math.random() * 100;
             clouds[i].y = 10 + Math.random() * 60;
         }
     }
 
-    for (let tuft of grassTufts) {
+    for (let tuft of grassTufts)
+    {
         tuft.x -= baseSpeed;
         if (tuft.x < 0) tuft.x = canvas.width + Math.random() * 50;
     }
@@ -267,16 +336,22 @@ function gameLoop() {
     if (isGrounded) playerSprite.update();
     else playerSprite.currentFrame = 0;
 
-    // --- 5. DRAW (Zeichnen) ---
+    // 5. DRAW
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    for (let i = 0; i < clouds.length; i++) cloudSprite.draw(ctx, clouds[i].x, clouds[i].y);
+    for (let i = 0; i < clouds.length; i++)
+    {
+        cloudSprite.draw(ctx, clouds[i].x, clouds[i].y);
+    }
 
     ctx.fillStyle = "#2E8B57";
     ctx.fillRect(0, 170, canvas.width, 30);
 
     ctx.fillStyle = "#246B43";
-    for (let tuft of grassTufts) ctx.fillRect(tuft.x, tuft.y, tuft.w, 3);
+    for (let tuft of grassTufts)
+    {
+        ctx.fillRect(tuft.x, tuft.y, tuft.w, 3);
+    }
 
     // HUD
     ctx.fillStyle = "black";
@@ -311,13 +386,16 @@ function gameLoop() {
     ctx.lineWidth = 2;
     ctx.strokeRect(660, 15, 110, 14);
 
-    // Spieler (Blink-Effekt)
-    if (invulnerabilityTimer === 0 || Math.floor(invulnerabilityTimer / 6) % 2 === 0) {
+    // Spieler (Blinken bei Unverwundbarkeit)
+    if (invulnerabilityTimer === 0 || Math.floor(invulnerabilityTimer / 6) % 2 === 0)
+    {
         playerSprite.draw(ctx, player.x, player.y);
     }
 
-    for (let obs of activeObstacles) {
-        for (let i = 0; i < obs.sprites.length; i++) {
+    for (let obs of activeObstacles)
+    {
+        for (let i = 0; i < obs.sprites.length; i++)
+        {
             obs.sprites[i].draw(ctx, obs.x + (i * objSize), obs.y);
         }
     }

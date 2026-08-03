@@ -1,12 +1,12 @@
-// --- GLOBALE SKALIERUNGSWERTE (Müssen als Erstes bereitstehen!) ---
+// --- GLOBALE SKALIERUNGSWERTE ---
 const pixelScale = 5;
 const objSize = 8 * pixelScale;
 
 // --- DEBUGSCHALTER & SPIELZUSTÄNDE ---
 const DEBUG_MODE = false; // Setze auf false, um das Balancing-Panel auszublenden
 
-// Spielzustände (States)
-const GAME_STATE = {
+const GAME_STATE = 
+{
     START: "START",
     PLAYING: "PLAYING",
     PAUSED: "PAUSED",
@@ -41,14 +41,16 @@ let health = 100;
 const maxHealth = 100;
 
 let invulnerabilityTimer = 0;
-const invulnerabilityDuration = 60; // ~1 Sekunde Unverwundbarkeit nach Treffer
+const invulnerabilityDuration = 60; // ~1 Sekunde Unverwundbarkeit
 
 let score = 0;
 let highScore = localStorage.getItem("golfHighScore") || 0;
 
 // Highscore-Senden vorbereiten
-function checkAndSendHighScore(newScore) {
-    if (newScore > highScore) {
+function checkAndSendHighScore(newScore)
+{
+    if (newScore > highScore)
+    {
         highScore = newScore;
         localStorage.setItem("golfHighScore", highScore);
         console.log(`Neuer Highscore für ${currentPlayerName}: ${highScore}`);

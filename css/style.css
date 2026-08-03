@@ -1,32 +1,57 @@
-body {
+html, body
+{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1a1a1a;
+    font-family: sans-serif;
+    color: #fff;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    background-color: #1a1a1a;
-    font-family: sans-serif;
-    color: #fff;
-    padding: 20px 0;
-    box-sizing: border-box;
+
+    /* Verhindert ungewolltes Scrollen, Markieren und Heranzoomen auf dem Handy */
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    overflow: hidden;
 }
 
-#gameContainer {
+#gameContainer
+{
     position: relative;
+    width: 100%;
+    max-width: 800px;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
 }
 
-canvas {
-    border: 4px solid #fff;
-    background-color: #87CEEB; /* Himmelblau */
+canvas
+{
+    border: 3px solid #fff;
+    background-color: #87CEEB;
     box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-    display: block;
+
+    /* Responsive Skalierung für Mobilgeräte */
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 4 / 1;
+
+    /* Verhindert mobiles Auswählen und Menüs */
+    touch-action: none;
+    -webkit-touch-callout: none;
 }
 
 /* Test-Panel Styling */
-#controlsPanel {
+#controlsPanel
+{
     margin-top: 15px;
     width: 800px;
+    max-width: 95%;
     background-color: #222;
     border: 2px solid #555;
     border-radius: 8px;
@@ -37,23 +62,27 @@ canvas {
     gap: 12px 20px;
 }
 
-.control-group {
+.control-group
+{
     display: flex;
     flex-direction: column;
     font-size: 13px;
 }
 
-.control-group div {
+.control-group div
+{
     display: flex;
     justify-content: space-between;
     margin-bottom: 4px;
 }
 
-.control-group input[type=range] {
+.control-group input[type=range]
+{
     cursor: pointer;
 }
 
-.panel-title {
+.panel-title
+{
     grid-column: 1 / -1;
     font-size: 16px;
     font-weight: bold;
