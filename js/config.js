@@ -47,18 +47,20 @@ let score = 0;
 let highScore = localStorage.getItem("golfHighScore") || 0;
 
 // Highscore-Übertragung an Google Apps Script via JSONP
-function sendHighscoreToScorecardApp(playerName, score) {
-    // Hier MUSS deine aktuelle URL aus der config.js stehen:
+function sendHighscoreToScorecardApp(playerName, score) 
+{
     const API_URL = "https://script.google.com/macros/s/AKfycbyeQbE_twMmNJkr3Fv9PSl72Shw_deoIf72gKZnUZdsBlTJzFGnf-rm4uozu_tp2t-Kag/exec";
     
     const payload = JSON.stringify({
         action: 'savePixelGolfHighscore',
         spielerName: playerName,
-        score: parseInt(score) || 0
+        score: parseInt(score) || 0,
+        timestamp: new Date().toISOString() // Generiert z. B. "2026-08-03T17:15:00.000Z"
     });
 
     const callbackName = "gas_hs_cb_" + Math.random().toString(36).substring(2, 15);
-    window[callbackName] = function(data) {
+    window[callbackName] = function(data) 
+    {
         console.log("Server-Antwort:", data);
         delete window[callbackName];
     };
