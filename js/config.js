@@ -46,7 +46,30 @@ const invulnerabilityDuration = 60; // ~1 Sekunde Unverwundbarkeit
 let score = 0;
 let highScore = localStorage.getItem("golfHighScore") || 0;
 
-// Highscore-Senden vorbereiten
+// Highscore-Übertragung an Google Apps Script via JSONP
+function sendHighscoreToScorecardApp(playerName, scoreToSave)
+{
+    const API_URL = "https://script.google.com/macros/s/AKfycbyG7sesoWaskN4vsg5rfgYzi96Zkpu4CemLm-WKEkDW4Cg6h8jyMOIXlG9uhejkqVI6/exec";
+    
+    const payload = JSON.stringify({
+        action: 'savePixelGolfHighscore',
+        spielerName: playerName,
+        score: scoreToSave
+    });
+
+    const callbackName = "gas_hs_cb_" + Math.random().toString(36).substring(2, 15);
+    window[callbackName] = function(data)
+    {
+        console.log("Highscore erfolgreich an GAS übermittelt:", data);
+        delete window[callbackName];
+    };
+
+    const script = document.createElement("script");
+    script.src = `${API_URL}?callback=${callbackName}&data=${encodeURIComponent(payload)}`;
+    document.body.appendChild(script);
+}
+
+// Highscore-Prüfung & Auslösung
 function checkAndSendHighScore(newScore)
 {
     if (newScore > highScore)
@@ -54,5 +77,8 @@ function checkAndSendHighScore(newScore)
         highScore = newScore;
         localStorage.setItem("golfHighScore", highScore);
         console.log(`Neuer Highscore für ${currentPlayerName}: ${highScore}`);
+        
+        // Sendet den neuen Rekord an Google Sheets
+        sendHighscoreToScorecardApp(currentPlayerName, highScore);
     }
 }
