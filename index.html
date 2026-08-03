@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOCH IHN EIN - Pixel Golf Run</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="800" height="200"></canvas>
+    </div>
+
+    <!-- Live Physik- & Balancing-Labor -->
+    <div id="controlsPanel">
+        <div class="panel-title">🛠️ Live Physik- & Balancing-Labor</div>
+
+        <div class="control-group">
+            <div><label for="sliderInitialJump">Initialer Sprungimpuls (initialJumpPower):</label> <span id="valInitialJump">-4.0</span></div>
+            <input type="range" id="sliderInitialJump" min="-18" max="-1" step="0.5" value="-4.0">
+        </div>
+
+        <div class="control-group">
+            <div><label for="sliderHoldBoost">Halte-Schub (holdBoostPower):</label> <span id="valHoldBoost">-0.45</span></div>
+            <input type="range" id="sliderHoldBoost" min="-1.5" max="-0.05" step="0.05" value="-0.45">
+        </div>
+
+        <div class="control-group">
+            <div><label for="sliderGravity">Schwerkraft (gravity):</label> <span id="valGravity">0.30</span></div>
+            <input type="range" id="sliderGravity" min="0.1" max="1.5" step="0.05" value="0.30">
+        </div>
+
+        <div class="control-group">
+            <div><label for="sliderBaseSpeed">Start-Geschwindigkeit (baseSpeed):</label> <span id="valBaseSpeed">4.7</span></div>
+            <input type="range" id="sliderBaseSpeed" min="1.0" max="10.0" step="0.1" value="4.7">
+        </div>
+
+        <div class="control-group">
+            <div><label for="sliderStaminaDrain">Stamina-Verbrauch beim Halten (staminaDrain):</label> <span id="valStaminaDrain">2.0</span></div>
+            <input type="range" id="sliderStaminaDrain" min="0.5" max="8.0" step="0.1" value="2.0">
+        </div>
+
+        <div class="control-group">
+            <div><label for="sliderStaminaRegen">Stamina-Erholung am Boden (staminaRegen):</label> <span id="valStaminaRegen">0.8</span></div>
+            <input type="range" id="sliderStaminaRegen" min="0.1" max="4.0" step="0.1" value="0.8">
+        </div>
+
+        <div class="control-group">
+            <div><label for="sliderBaseGap">Basis-Mindestabstand (baseMinGap):</label> <span id="valBaseGap">480</span></div>
+            <input type="range" id="sliderBaseGap" min="250" max="700" step="10" value="480">
+        </div>
+    </div>
+
+    <!-- Skripte schrittweise laden -->
+    <script src="js/config.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/sprites.js"></script>
+    <script src="js/entities.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
